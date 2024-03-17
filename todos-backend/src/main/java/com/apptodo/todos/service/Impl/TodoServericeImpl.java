@@ -1,13 +1,10 @@
 package com.apptodo.todos.service.Impl;
 
-import java.util.List;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import com.apptodo.todos.dto.TodoDTO;
 import com.apptodo.todos.entity.Todo;
-import com.apptodo.todos.exception.ResourceNotFoundException;
 import com.apptodo.todos.repository.TodoRepository;
 import com.apptodo.todos.service.TodoService;
 
@@ -43,25 +40,5 @@ public class TodoServericeImpl implements TodoService {
         return savedTodoDTO;
     }
 
-    @Override
-    public List<TodoDTO> geTodoDTO() {
-        List<Todo> todos = todoRepository.findAll();
-        if (todos.isEmpty()) {
-            throw new ResourceNotFoundException("No todo found! Add your todo now");
-        }
-        return null;
-    }
-
-    @Override
-    public TodoDTO geTodoById(Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'geTodoById'");
-    }
-
-    @Override
-    public void deleteTodo(Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteTodo'");
-    }
 
 }
