@@ -23,20 +23,23 @@ public class TodoServericeImpl implements TodoService {
     @Override
     public TodoDTO createTodo(TodoDTO todoDTO) {
         // convert todo dto into todo jpa entity
-        Todo todo = new Todo();
-        todo.setTitle(todoDTO.getTitle());
-        todo.setDescription(todoDTO.getDescription());
-        todo.setCompleted(todo.isCompleted());
+        // Todo todo = new Todo();
+        // todo.setTitle(todoDTO.getTitle());
+        // todo.setDescription(todoDTO.getDescription());
+        // todo.setCompleted(todo.isCompleted());
+        //..........alternative via model mapper library........
+        Todo todo = modelMapper.map(todoDTO, Todo.class);
 
         // save todo jpa entity to db
         Todo savedTodo = todoRepository.save(todo);
 
         // convert saved todo jpa entity object to todo dto object
-        TodoDTO savedTodoDTO = new TodoDTO();
-        savedTodoDTO.setId(savedTodo.getId());
-        savedTodoDTO.setTitle(savedTodo.getTitle());
-        savedTodoDTO.setDescription(savedTodo.getDescription());
-        savedTodoDTO.setCompleted(savedTodo.isCompleted());
+        TodoDTO savedTodoDTO = modelMapper.map(savedTodo, TodoDTO.class);
+        // savedTodoDTO.setId(savedTodo.getId());
+        // savedTodoDTO.setTitle(savedTodo.getTitle());
+        // savedTodoDTO.setDescription(savedTodo.getDescription());
+        // savedTodoDTO.setCompleted(savedTodo.isCompleted());
+
         return savedTodoDTO;
     }
 
