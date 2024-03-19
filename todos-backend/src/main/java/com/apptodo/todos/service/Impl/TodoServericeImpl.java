@@ -1,10 +1,14 @@
 package com.apptodo.todos.service.Impl;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import com.apptodo.todos.dto.TodoDTO;
 import com.apptodo.todos.entity.Todo;
+import com.apptodo.todos.exception.ResourceNotFoundException;
 import com.apptodo.todos.repository.TodoRepository;
 import com.apptodo.todos.service.TodoService;
 
@@ -24,7 +28,7 @@ public class TodoServericeImpl implements TodoService {
         // todo.setTitle(todoDTO.getTitle());
         // todo.setDescription(todoDTO.getDescription());
         // todo.setCompleted(todo.isCompleted());
-        //..........alternative via model mapper library........
+        // ..........alternative via model mapper library........
         Todo todo = modelMapper.map(todoDTO, Todo.class);
 
         // save todo jpa entity to db
@@ -40,5 +44,23 @@ public class TodoServericeImpl implements TodoService {
         return savedTodoDTO;
     }
 
+    @Override
+    public List<TodoDTO> getAllTodo() {
+        List<Todo> todos = todoRepository.findAll();
+        if (todos.isEmpty()) {
+            throw new ResourceNotFoundException("No todo record found!");
+        }
+        return todos.stream()
+                .map(todo -> modelMapper.map(todo, TodoDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void deleteTodo(Long id) {
+        Todo todo = todoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("todo is not found with ID: " + id));
+        todoRepository.deleteById(id);
+        modelMapper.map(todo, TodoDTO.class);
+    }
 
 }
