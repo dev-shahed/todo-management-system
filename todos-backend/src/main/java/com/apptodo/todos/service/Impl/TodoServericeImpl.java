@@ -77,7 +77,8 @@ public class TodoServericeImpl implements TodoService {
         theTodo.setTitle(todoDTO.getTitle());
         theTodo.setDescription(todoDTO.getDescription());
         theTodo.setCompleted(todoDTO.isCompleted());
-        return modelMapper.map(theTodo, TodoDTO.class);
+        Todo updatedTodo = todoRepository.save(theTodo);
+        return modelMapper.map(updatedTodo, TodoDTO.class);
     }
 
 }
