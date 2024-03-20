@@ -63,4 +63,10 @@ public class TodoServericeImpl implements TodoService {
         modelMapper.map(todo, TodoDTO.class);
     }
 
+    @Override
+    public TodoDTO getTodo(long id) {
+        Todo todo = todoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("todo is not exits!"));
+        return modelMapper.map(todo, TodoDTO.class);
+    }
+
 }
