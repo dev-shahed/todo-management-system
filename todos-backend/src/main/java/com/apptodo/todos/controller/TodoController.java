@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -42,7 +43,8 @@ public class TodoController {
     public ResponseEntity<?> gettingAllTodos() {
         try {
             List<TodoDTO> todos = todoService.getAllTodo();
-            return ResponseEntity.ok(todos);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(ApiResponse.success("fetched successfully ", todos));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(ApiResponse.error(e.getMessage()));
@@ -70,7 +72,8 @@ public class TodoController {
     public ResponseEntity<?> getTodo(@PathVariable Long id) {
         try {
             TodoDTO todo = todoService.getTodo(id);
-            return ResponseEntity.ok(todo);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(ApiResponse.success("fetched successfully ", todo));
         } catch (ResourceNotFoundException ex) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getErrorResponse());
         } catch (Exception e) {
@@ -89,6 +92,30 @@ public class TodoController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(ApiResponse.error("Failed to retrieve the todo"));
+        }
+    }
+
+    //complete todo status = true
+    @PatchMapping("/{id}/complete")
+    public ResponseEntity<?> completeStatus(@PathVariable Long id) {
+        try {
+            TodoDTO updatedTodo = todoService.completeTodo(id);
+            return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Completed!", updatedTodo));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body(ApiResponse.error("Failed to update status!"));
+        }
+    }
+
+    //incomplete a todo, status = false
+    @PatchMapping("/{id}/incomplete")
+    public ResponseEntity<?> incompleteStatus(@PathVariable Long id) {
+        try {
+            TodoDTO updatedTodo = todoService.inCompleteTodo(id);
+            return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Incomplete!", updatedTodo));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body(ApiResponse.error("Failed to update status!"));
         }
     }
 

@@ -81,4 +81,22 @@ public class TodoServericeImpl implements TodoService {
         return modelMapper.map(updatedTodo, TodoDTO.class);
     }
 
+    @Override
+    public TodoDTO completeTodo(Long id) {
+        Todo todo = todoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("todo is not exist: " + id));
+        todo.setCompleted(Boolean.TRUE);
+        Todo updateTodo = todoRepository.save(todo);
+        return modelMapper.map(updateTodo, TodoDTO.class);
+    }
+
+    @Override
+    public TodoDTO inCompleteTodo(Long id) {
+        Todo todo = todoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("todo is not exist: " + id));
+        todo.setCompleted(Boolean.FALSE);
+        Todo updateTodo = todoRepository.save(todo);
+        return modelMapper.map(updateTodo, TodoDTO.class);
+    }
+
 }

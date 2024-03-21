@@ -15,5 +15,8 @@ public interface TodoService {
 
     TodoDTO updateTodo(TodoDTO todoDTO, Long id);
 
+    TodoDTO completeTodo(Long id);
+
+    TodoDTO inCompleteTodo(Long id);
 
 }
