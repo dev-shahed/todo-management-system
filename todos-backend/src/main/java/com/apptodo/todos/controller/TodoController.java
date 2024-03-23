@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -27,6 +28,7 @@ import lombok.AllArgsConstructor;
 public class TodoController {
     private TodoService todoService;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping()
     ResponseEntity<?> creatingTodo(@RequestBody TodoDTO todoDTO) {
         try {
@@ -39,6 +41,7 @@ public class TodoController {
         }
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @GetMapping()
     public ResponseEntity<?> gettingAllTodos() {
         try {
@@ -54,6 +57,7 @@ public class TodoController {
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteStudent(@PathVariable Long id) {
         try {
@@ -68,6 +72,7 @@ public class TodoController {
         }
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @GetMapping("/{id}")
     public ResponseEntity<?> getTodo(@PathVariable Long id) {
         try {
@@ -82,6 +87,7 @@ public class TodoController {
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<?> updateTodo(@PathVariable Long id, @RequestBody TodoDTO todoDTO) {
         try {
@@ -96,6 +102,7 @@ public class TodoController {
     }
 
     //complete todo status = true
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @PatchMapping("/{id}/complete")
     public ResponseEntity<?> completeStatus(@PathVariable Long id) {
         try {
@@ -108,6 +115,7 @@ public class TodoController {
     }
 
     //incomplete a todo, status = false
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @PatchMapping("/{id}/incomplete")
     public ResponseEntity<?> incompleteStatus(@PathVariable Long id) {
         try {
