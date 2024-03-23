@@ -30,7 +30,7 @@ public class TodoController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping()
-    ResponseEntity<?> creatingTodo(@RequestBody TodoDTO todoDTO) {
+    ResponseEntity<?> creatingTodo(@RequestBody(required = true) TodoDTO todoDTO) {
         try {
             TodoDTO createdTodo = todoService.createTodo(todoDTO);
             return ResponseEntity.status(HttpStatus.CREATED)
