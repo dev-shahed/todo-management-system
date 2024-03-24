@@ -4,9 +4,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.apptodo.todos.dto.LoginDTO;
 import com.apptodo.todos.dto.RegisterDTO;
 import com.apptodo.todos.entity.Role;
 import com.apptodo.todos.entity.User;
@@ -23,6 +28,7 @@ public class AuthServiceImpl implements AuthService {
     private UserRepository userRepository;
     private RoleRepository roleRepository;
     private PasswordEncoder passwordEncoder;
+    private AuthenticationManager authenticationManager;
 
     private ModelMapper modelMapper;
 
@@ -59,6 +65,22 @@ public class AuthServiceImpl implements AuthService {
         User savedUser = userRepository.save(user);
 
         return modelMapper.map(savedUser, RegisterDTO.class);
+    }
+
+    @Override
+    public String login(LoginDTO loginDTO) {
+
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginDTO.getUsernameOrEmail(),
+                        loginDTO.getPassword()));
+
+        // Set the authenticated authentication object in the SecurityContextHolder
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        // If authentication succeeds, return a success message
+        return "Logged in successfully";
+
     }
 
 }
