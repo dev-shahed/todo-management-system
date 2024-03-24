@@ -44,17 +44,17 @@ public class AuthServiceImpl implements AuthService {
             throw new AuthException("email already exist!");
         }
 
-        // User user = new User();
-        // user.setName(registerDTO.getName());
-        // user.setUsername(registerDTO.getUsername());
-        // user.setEmail(registerDTO.getEmail());
-        // user.setPassword(passwordEncoder.encode(registerDTO.getPassword()));
+        User user = new User();
+        user.setName(registerDTO.getName());
+        user.setUsername(registerDTO.getUsername());
+        user.setEmail(registerDTO.getEmail());
+        user.setPassword(passwordEncoder.encode(registerDTO.getPassword()));
 
         // Mapping properties from RegisterDTO to User
-        User user = modelMapper.map(registerDTO, User.class);
+        // User user = modelMapper.map(registerDTO, User.class);
 
         // Encode the password
-        user.setPassword(passwordEncoder.encode(registerDTO.getPassword()));
+        // user.setPassword(passwordEncoder.encode(registerDTO.getPassword()));
 
         Set<Role> roles = new HashSet<>();
         Role userRole = roleRepository.findByName("ROLE_USER");// default role USER for every registered users..
@@ -69,7 +69,6 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public String login(LoginDTO loginDTO) {
-
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginDTO.getUsernameOrEmail(),
@@ -79,8 +78,7 @@ public class AuthServiceImpl implements AuthService {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         // If authentication succeeds, return a success message
-        return "Logged in successfully";
-
+        return "Logged in successfully!";
     }
 
 }

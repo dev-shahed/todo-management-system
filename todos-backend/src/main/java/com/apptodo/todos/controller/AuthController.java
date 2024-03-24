@@ -37,16 +37,16 @@ public class AuthController {
         }
     }
 
-    // api for user login..
+    // api for user login.,
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody LoginDTO loginDTO) {
         try {
             String response = authService.login(loginDTO);
-            System.out.println(response);
-            return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success("successfully", null));
-        } catch (AuthException e) {
+            return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(response, null));
+        } catch (Exception e) {
+            // Handle other exceptions, if any
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ApiResponse.error("Internal server error, try again.."));
+                    .body(ApiResponse.error("User not found!"));
         }
     }
 
