@@ -18,6 +18,7 @@ import com.apptodo.todos.entity.User;
 import com.apptodo.todos.exception.AuthException;
 import com.apptodo.todos.repository.RoleRepository;
 import com.apptodo.todos.repository.UserRepository;
+import com.apptodo.todos.security.JwtTokenProvider;
 import com.apptodo.todos.service.AuthService;
 
 import lombok.AllArgsConstructor;
@@ -29,6 +30,7 @@ public class AuthServiceImpl implements AuthService {
     private RoleRepository roleRepository;
     private PasswordEncoder passwordEncoder;
     private AuthenticationManager authenticationManager;
+    private JwtTokenProvider jwtTokenProvider;
 
     private ModelMapper modelMapper;
 
@@ -77,8 +79,11 @@ public class AuthServiceImpl implements AuthService {
         // Set the authenticated authentication object in the SecurityContextHolder
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
+        // jwt login with token
+        String token = jwtTokenProvider.generateJwtToken(authentication);
+
         // If authentication succeeds, return a success message
-        return "Logged in successfully!";
+        return token;
     }
 
 }

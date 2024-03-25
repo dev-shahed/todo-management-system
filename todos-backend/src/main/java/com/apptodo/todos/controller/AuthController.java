@@ -7,10 +7,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.apptodo.todos.dto.JwtAuthResponse;
 import com.apptodo.todos.dto.LoginDTO;
 import com.apptodo.todos.dto.RegisterDTO;
 import com.apptodo.todos.exception.ApiResponse;
 import com.apptodo.todos.exception.AuthException;
+import com.apptodo.todos.exception.ResourceNotFoundException;
 import com.apptodo.todos.service.AuthService;
 
 import lombok.AllArgsConstructor;
@@ -41,12 +43,20 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody LoginDTO loginDTO) {
         try {
-            String response = authService.login(loginDTO);
-            return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(response, null));
+            String token = authService.login(loginDTO);
+            JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
+            jwtAuthResponse.setAccessToken(token);
+            jwtAuthResponse.setMessage("Login successful");
+            return ResponseEntity.status(HttpStatus.OK).body(jwtAuthResponse);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ApiResponse.error(e.getMessage()));
+        } catch (AuthException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(ApiResponse.error(e.getMessage()));
         } catch (Exception e) {
-            // Handle other exceptions, if any
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ApiResponse.error("User not found!"));
+                    .body(ApiResponse.error("An internal server error occurred"));
         }
     }
 
