@@ -1,0 +1,55 @@
+
+{
+  "signInInputs": [
+    {
+      "id": "usernameOrEmail",
+      "label": "Email address",
+      "type": "text",
+      "autoComplete": "email",
+      "placeholder": "Enter your username or email",
+      "required": true
+    },
+    {
+      "id": "password",
+      "label": "Password",
+      "type": "password",
+      "autoComplete": "current-password",
+      "placeholder": "Enter your password",
+      "required": true
+    }
+  ],
+  "signUpInputs": [
+    {
+      "id": "name",
+      "label": "Name",
+      "type": "text",
+      "autoComplete": "name",
+      "placeholder": "Enter your name",
+      "required": true
+    },
+    {
+      "id": "username",
+      "label": "Username",
+      "type": "text",
+      "autoComplete": "username",
+      "placeholder": "Enter your username",
+      "required": true
+    },
+    {
+      "id": "email",
+      "label": "Email address",
+      "type": "email",
+      "autoComplete": "email",
+      "placeholder": "Enter your email",
+      "required": true
+    },
+    {
+      "id": "password",
+      "label": "Password",
+      "type": "password",
+      "autoComplete": "new-password",
+      "placeholder": "Enter your password",
+      "required": true
+    }
+  ]
+}

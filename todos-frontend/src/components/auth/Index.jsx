@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import Signup from "./Signup";
+import Auth from "./Auth";
 
 const userTerms = [
   {
@@ -25,7 +25,7 @@ export default function User() {
           </div>
         ))}
       </div>
-      <Signup />
+      <Auth />
     </Fragment>
   );
 }
