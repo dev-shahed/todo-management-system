@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,6 +17,7 @@ import com.apptodo.todos.dto.RegisterDTO;
 import com.apptodo.todos.entity.Role;
 import com.apptodo.todos.entity.User;
 import com.apptodo.todos.exception.AuthException;
+import com.apptodo.todos.exception.ResourceNotFoundException;
 import com.apptodo.todos.repository.RoleRepository;
 import com.apptodo.todos.repository.UserRepository;
 import com.apptodo.todos.security.JwtTokenProvider;
@@ -71,19 +73,23 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public String login(LoginDTO loginDTO) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginDTO.getUsernameOrEmail(),
-                        loginDTO.getPassword()));
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginDTO.getUsernameOrEmail(),
+                            loginDTO.getPassword()));
 
-        // Set the authenticated authentication object in the SecurityContextHolder
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+            // Set the authenticated authentication object in the SecurityContextHolder
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        // jwt login with token
-        String token = jwtTokenProvider.generateJwtToken(authentication);
+            // jwt login with token
+            String token = jwtTokenProvider.generateJwtToken(authentication);
 
-        // If authentication succeeds, return a success message
-        return token;
+            // If authentication succeeds, return a success message
+            return token;
+        } catch (BadCredentialsException e) {
+            throw new ResourceNotFoundException("User not found");
+        }
     }
 
 }
