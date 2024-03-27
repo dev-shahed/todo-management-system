@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from "react";
 // import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import { registerUser } from "../../services/AuthService";
+import { loginUser, registerUser } from "../../services/AuthService";
 import authData from "./data.json";
 
 export default function Auth() {
@@ -30,9 +30,21 @@ export default function Auth() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await registerUser(formData);
-      const { status, message } = response.data;
-      handleResponse(status, message, "success");
+      if (signInMode) {
+        // Handle sign-in
+        const response = await loginUser(formData);
+        console.log(response);
+        const { status, message, accessToken } = response.data;
+        if (status === "success") {
+          localStorage.setItem("token", accessToken);
+          handleResponse(status, message, "success");
+        }
+      } else {
+        // Handle registration
+        const response = await registerUser(formData);
+        const { status, message } = response.data;
+        handleResponse(status, message, "success");
+      }
     } catch (error) {
       const { status, message } = error.response.data;
       handleResponse(status, message, "error");

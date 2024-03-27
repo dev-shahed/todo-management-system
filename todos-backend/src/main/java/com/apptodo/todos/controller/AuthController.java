@@ -49,6 +49,7 @@ public class AuthController {
             JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
             jwtAuthResponse.setAccessToken(token);
             jwtAuthResponse.setMessage("Login successful");
+            jwtAuthResponse.setStatus("success");
             return ResponseEntity.status(HttpStatus.OK).body(jwtAuthResponse);
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)

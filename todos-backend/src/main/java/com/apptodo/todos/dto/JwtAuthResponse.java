@@ -10,6 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class JwtAuthResponse {
+    private String status;
     private String message;
     private String accessToken;
     private String tokenType = "Bearer";
