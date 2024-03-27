@@ -29,34 +29,29 @@ export default function Auth() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submitted with data:", formData);
     try {
       const response = await registerUser(formData);
-      console.log(response);
       const { status, message } = response.data;
-      if (status == "success") {
-        Swal.fire({
-          position: "top",
-          icon: "success",
-          title: `${message}`,
-          showConfirmButton: false,
-          timer: 1500,
-        });
-      }
+      handleResponse(status, message, "success");
     } catch (error) {
-      const{status, message} = error.response.data;
-      if (status == "error") {
-        Swal.fire({
-          position: "top",
-          icon: "error",
-          title: `${message}`,
-          showConfirmButton: false,
-          timer: 1500,
-        });
-      }
-    }finally{
+      const { status, message } = error.response.data;
+      handleResponse(status, message, "error");
+    } finally {
       console.log("Let's go");
     }
+  };
+
+  const handleResponse = (status, message, icon) => {
+    const position = "top";
+    const timer = 1500;
+    const swalConfig = {
+      position,
+      icon,
+      title: `${message}`,
+      showConfirmButton: false,
+      timer,
+    };
+    Swal.fire(swalConfig);
   };
 
   return (
