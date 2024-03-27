@@ -1,4 +1,7 @@
 import React, { Fragment, useState } from "react";
+// import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import { registerUser } from "../../services/AuthService";
 import authData from "./data.json";
 
 export default function Auth() {
@@ -10,17 +13,50 @@ export default function Auth() {
   const linkClass =
     "font-semibold leading-6 text-indigo-600 hover:text-indigo-500";
 
-  const [signInMode, setsignInMode] = useState(true);
+  const [signInMode, setSignInMode] = useState(true);
   const [formData, setFormData] = useState({});
+  // const navigator = useNavigate();
+
+  const switchMode = () => {
+    setSignInMode(!signInMode);
+    setFormData({}); // Clear form data when switching modes
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Form submitted with data:", formData);
+    try {
+      const response = await registerUser(formData);
+      console.log(response);
+      const { status, message } = response.data;
+      if (status == "success") {
+        Swal.fire({
+          position: "top",
+          icon: "success",
+          title: `${message}`,
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      }
+    } catch (error) {
+      const{status, message} = error.response.data;
+      if (status == "error") {
+        Swal.fire({
+          position: "top",
+          icon: "error",
+          title: `${message}`,
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      }
+    }finally{
+      console.log("Let's go");
+    }
   };
 
   return (
@@ -98,10 +134,7 @@ export default function Auth() {
             {signInMode
               ? "Don't have an Account? "
               : "Already have an account? "}
-            <button
-              className={linkClass}
-              onClick={() => setsignInMode(!signInMode)}
-            >
+            <button className={linkClass} onClick={switchMode}>
               {signInMode ? "Create an Account" : "Sign in instead"}
             </button>
           </p>

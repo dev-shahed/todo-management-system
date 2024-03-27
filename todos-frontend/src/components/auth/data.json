@@ -3,9 +3,9 @@
   "signInInputs": [
     {
       "id": "usernameOrEmail",
-      "label": "Email address",
+      "label": "Username or Email",
       "type": "text",
-      "autoComplete": "email",
+      "autoComplete": "",
       "placeholder": "Enter your username or email",
       "required": true
     },
