@@ -60,11 +60,10 @@ export default function TodoList() {
   return (
     <>
       <div>
-        {/* Map through the todos array and render each todo item */}
         {todos?.map((todo) => (
           <div
             key={todo.id}
-            className="flex my-4 p-4 items-center rounded shadow p-6 bg-pink-200"
+            className="flex my-6 items-center rounded shadow p-4 bg-pink-200"
           >
             <div className="flex-grow">
               {/* Conditional rendering based on todo completion status */}
@@ -81,7 +80,6 @@ export default function TodoList() {
               >
                 {todo.completed ? "Completed" : "Complete"}
               </button>
-              {/* Assuming onClick handlers are needed for buttons */}
               <button
                 //onClick={() => handleRemove(todo.id)}
                 className={dangerBtnClass}

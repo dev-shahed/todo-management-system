@@ -9,3 +9,5 @@ export const getTodos = (token) => {
   };
   return axios.get(REST_API_BASE_URL, { headers });
 };
+
+export const createTodo = (todo) => axios.post(REST_API_BASE_URL, todo);
