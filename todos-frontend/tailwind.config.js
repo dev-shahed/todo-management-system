@@ -10,6 +10,7 @@ export default {
         black: "#212121",
         white: "#ffffff",
         gray: "#808080e2",
+        greytext: "text-gray-900",
       },
     },
   },

@@ -2,17 +2,10 @@ import React, { Fragment, useState } from "react";
 // import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { loginUser, registerUser } from "../../services/AuthService";
-import authData from "./data.json";
+import { buttonClass, inputClass, labelClass, linkClass } from "../../styles/FromStyle";
+import { signInInputs, signUpInputs } from "./data.json";
 
 export default function Auth() {
-  const { signInInputs, signUpInputs } = authData;
-  const inputClass =
-    "p-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6";
-  const buttonClass =
-    "flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600";
-  const linkClass =
-    "font-semibold leading-6 text-indigo-600 hover:text-indigo-500";
-
   const [signInMode, setSignInMode] = useState(true);
   const [formData, setFormData] = useState({});
   // const navigator = useNavigate();
@@ -88,7 +81,7 @@ export default function Auth() {
                   <div key={input.id}>
                     <label
                       htmlFor={input.id}
-                      className="block text-sm font-medium leading-6 text-gray-900"
+                      className={labelClass}
                     >
                       {input.label}
                     </label>
@@ -111,7 +104,7 @@ export default function Auth() {
                   <div key={input.id}>
                     <label
                       htmlFor={input.id}
-                      className="block text-sm font-medium leading-6 text-gray-900"
+                      className={labelClass}
                     >
                       {input.label}
                     </label>

@@ -17,14 +17,6 @@ const userTerms = [
 export default function User() {
   return (
     <Fragment>
-      <div>
-        {userTerms.map((termInfo) => (
-          <div key={termInfo.id}>
-            <h2>{termInfo.term}</h2>
-            <p>{termInfo.slug}</p>
-          </div>
-        ))}
-      </div>
       <Auth />
     </Fragment>
   );

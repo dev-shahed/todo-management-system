@@ -1,0 +1,26 @@
+{
+  "todoInputs": [
+    {
+      "id": "title",
+      "label": "Todo Title",
+      "type": "text",
+      "autoComplete": "",
+      "placeholder": "Todo title",
+      "required": true
+    },
+    {
+      "id": "description",
+      "label": "Description",
+      "type": "text",
+      "autoComplete": "",
+      "placeholder": "Todo description",
+      "required": true
+    },
+    {
+      "id": "status",
+      "label": "Todo Status",
+      "type": "checkbox",
+      "autoComplete": ""
+    }
+  ]
+}

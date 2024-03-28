@@ -1,12 +1,20 @@
 import { Fragment } from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 import Auth from "./components/auth/Index";
+import Todo from "./components/todo";
 
 function App() {
   return (
     <Fragment>
-      <h1 className="text-3xl font-bold underline">Hello world!</h1>
-      <Auth />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Todo />}/>
+        </Routes>
+        <Routes>
+          <Route path="/auth" element={<Auth />}/>
+        </Routes>
+      </BrowserRouter>
     </Fragment>
   );
 }
