@@ -1,5 +1,6 @@
 import React, { Fragment, useState } from "react";
 // import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { loginUser, registerUser } from "../../services/AuthService";
 import { buttonClass, inputClass, labelClass, linkClass } from "../../styles/FromStyle";
@@ -8,7 +9,7 @@ import { signInInputs, signUpInputs } from "./data.json";
 export default function Auth() {
   const [signInMode, setSignInMode] = useState(true);
   const [formData, setFormData] = useState({});
-  // const navigator = useNavigate();
+  const navigator = useNavigate();
 
   const switchMode = () => {
     setSignInMode(!signInMode);
@@ -31,6 +32,7 @@ export default function Auth() {
         if (status === "success") {
           localStorage.setItem("token", accessToken);
           handleResponse(status, message, "success");
+          navigator("/");
         }
       } else {
         // Handle registration
@@ -41,8 +43,6 @@ export default function Auth() {
     } catch (error) {
       const { status, message } = error.response.data;
       handleResponse(status, message, "error");
-    } finally {
-      console.log("Let's go");
     }
   };
 
