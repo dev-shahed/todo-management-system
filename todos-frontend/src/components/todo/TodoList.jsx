@@ -11,7 +11,7 @@ import {
 function TodoList() {
   const [todos, setTodos] = useState();
   const [isLoading, setIsLoading] = useState();
-  const [isAuthorized, setIsAuthorized] = useState(false);
+  const [isAuthorized, setIsAuthorized] = useState();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,60 +37,56 @@ function TodoList() {
     fetchData();
   }, [isAuthorized]);
 
-  if (isAuthorized && isLoading) {
-    console.log(isAuthorized, isLoading)
-    return (
-      <div className="py-4 text-center">
-        <h3>
-          {!isAuthorized ? (
-            <div>
-              Unauthorized! Please{" "}
-              <span className={linkClass}>
-                <Link to="/auth">login..</Link>
-              </span>
-            </div>
-          ) : (
-            "Loading..."
-          )}
-        </h3>
-      </div>
-    );
-  }
-
   return (
-    <>
-      <div>
-        {todos?.map((todo) => (
-          <div
-            key={todo.id}
-            className="flex my-6 items-center rounded shadow p-4 bg-pink-200"
-          >
-            <div className="flex-grow">
-              {/* Conditional rendering based on todo completion status */}
-              <p className={todo.completed ? "line-through text-green" : ""}>
-                {todo.title}
-              </p>
-              <p className={todo.completed ? "hidden" : "text-sm text-gray"}>
-                {todo.description}
-              </p>
-            </div>
-            <div className="flex flex-col gap-2">
-              <button
-                className={todo.completed ? successBtnClass : buttonClass}
+    <div className="py-4">
+      {isAuthorized ? (
+        isLoading ? (
+          <h3 className="text-center">Loading...</h3>
+        ) : (
+          <div>
+            {todos?.map((todo) => (
+              <div
+                key={todo.id}
+                className="flex my-6 items-center rounded shadow p-4 bg-pink-200"
               >
-                {todo.completed ? "Completed" : "Complete"}
-              </button>
-              <button
-                //onClick={() => handleRemove(todo.id)}
-                className={dangerBtnClass}
-              >
-                Remove
-              </button>
-            </div>
+                <div className="flex-grow">
+                  <p
+                    className={todo.completed ? "line-through text-green" : ""}
+                  >
+                    {todo.title}
+                  </p>
+                  <p
+                    className={todo.completed ? "hidden" : "text-sm text-gray"}
+                  >
+                    {todo.description}
+                  </p>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <button
+                    className={todo.completed ? successBtnClass : buttonClass}
+                  >
+                    {todo.completed ? "Completed" : "Complete"}
+                  </button>
+                  <button
+                    //onClick={() => handleRemove(todo.id)}
+                    className={dangerBtnClass}
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-    </>
+        )
+      ) : (
+        <h3 className="text-center">
+          Unauthorized! Please{" "}
+          <span className={linkClass}>
+            <Link to="/auth">login..</Link>
+          </span>
+        </h3>
+      )}
+    </div>
   );
 }
 export default memo(TodoList);
