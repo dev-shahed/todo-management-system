@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getTodos } from "../../services/TodoService";
 import {
@@ -8,11 +8,10 @@ import {
   successBtnClass,
 } from "../../styles/FromStyle";
 
-export default function TodoList() {
+function TodoList() {
   const [todos, setTodos] = useState();
-  console.log(todos);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isAuthorized, setIsAuthorized] = useState(true);
+  const [isLoading, setIsLoading] = useState();
+  const [isAuthorized, setIsAuthorized] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -22,13 +21,13 @@ export default function TodoList() {
         const token = localStorage.getItem("token");
         // Make sure token exists before making the API call
         if (token) {
+          setIsAuthorized(true);
           // Include the token in the headers
           const response = await getTodos(token);
           const { data, status } = response.data;
           if (status === "success") {
             setTodos(data);
           }
-          setIsAuthorized(true);
         }
       } catch (error) {
         setIsAuthorized(false);
@@ -36,9 +35,10 @@ export default function TodoList() {
       setIsLoading(false);
     };
     fetchData();
-  }, []);
+  }, [isAuthorized]);
 
-  if (isLoading || !isAuthorized) {
+  if (isAuthorized && isLoading) {
+    console.log(isAuthorized, isLoading)
     return (
       <div className="py-4 text-center">
         <h3>
@@ -93,3 +93,4 @@ export default function TodoList() {
     </>
   );
 }
+export default memo(TodoList);

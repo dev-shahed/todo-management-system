@@ -15,12 +15,6 @@
       "autoComplete": "",
       "placeholder": "Todo description",
       "required": true
-    },
-    {
-      "id": "status",
-      "label": "Todo Status",
-      "type": "checkbox",
-      "autoComplete": ""
     }
   ]
 }

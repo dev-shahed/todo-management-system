@@ -39,6 +39,7 @@ export default function Auth() {
         const response = await registerUser(formData);
         const { status, message } = response.data;
         handleResponse(status, message, "success");
+        switchMode(false)
       }
     } catch (error) {
       const { status, message } = error.response.data;
