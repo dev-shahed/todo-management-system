@@ -91,7 +91,7 @@ function TodoList() {
         const errorMsg =
           error.response.status === 401 && actionType === "remove"
             ? "Can't delete, you don't have the permission!"
-            : `Failed to ${actionType} todo, please try again`
+            : `Failed to ${actionType} todo, please try again`;
         Swal.fire({
           title: "Error",
           text: errorMsg,
@@ -101,6 +101,12 @@ function TodoList() {
     }
   };
 
+  if (todos && todos.length <= 0) {
+    return (
+      <h3 className="text-center my-5">No todos to show. Please create one.</h3>
+    );
+  }
+
   return (
     <div className="py-4">
       {isAuthorized ? (
@@ -108,45 +114,51 @@ function TodoList() {
           <h3 className="text-center">Loading...</h3>
         ) : (
           <div>
-            {todos.map((todo) => (
-              <div
-                key={todo.id}
-                className="flex my-6 items-center rounded shadow p-4 bg-pink-200"
-              >
-                <div className="flex-grow">
-                  <p
-                    className={todo.completed ? "line-through text-green" : ""}
-                  >
-                    {todo.title}
-                  </p>
-                  <p
-                    className={todo.completed ? "hidden" : "text-sm text-gray"}
-                  >
-                    {todo.description}
-                  </p>
+            {todos &&
+              todos.length > 0 &&
+              todos.map((todo) => (
+                <div
+                  key={todo.id}
+                  className="flex my-6 items-center rounded shadow p-4 bg-pink-200"
+                >
+                  <div className="flex-grow">
+                    <p
+                      className={
+                        todo.completed ? "line-through text-green" : ""
+                      }
+                    >
+                      {todo.title}
+                    </p>
+                    <p
+                      className={
+                        todo.completed ? "hidden" : "text-sm text-gray"
+                      }
+                    >
+                      {todo.description}
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <button
+                      onClick={() =>
+                        handleAction(
+                          todo.id,
+                          "statusChange",
+                          todo.completed ? "incomplete" : "complete"
+                        )
+                      }
+                      className={todo.completed ? successBtnClass : buttonClass}
+                    >
+                      {todo.completed ? "Completed" : "Incomplete"}
+                    </button>
+                    <button
+                      onClick={() => handleAction(todo.id, "remove")}
+                      className={dangerBtnClass}
+                    >
+                      Remove
+                    </button>
+                  </div>
                 </div>
-                <div className="flex flex-col gap-2">
-                  <button
-                    onClick={() =>
-                      handleAction(
-                        todo.id,
-                        "statusChange",
-                        todo.completed ? "incomplete" : "complete"
-                      )
-                    }
-                    className={todo.completed ? successBtnClass : buttonClass}
-                  >
-                    {todo.completed ? "Completed" : "Incomplete"}
-                  </button>
-                  <button
-                    onClick={() => handleAction(todo.id, "remove")}
-                    className={dangerBtnClass}
-                  >
-                    Remove
-                  </button>
-                </div>
-              </div>
-            ))}
+              ))}
           </div>
         )
       ) : (
