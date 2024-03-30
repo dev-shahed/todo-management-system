@@ -5,7 +5,18 @@ import { createTodo, updateTodo } from "../../services/TodoService";
 import { buttonClass, inputClass } from "../../styles/FromStyle";
 import TodoList from "./TodoList";
 
-export default function TodoForm({ isUpdate, setIsUpdate }) {
+export default function TodoForm({ fromProps }) {
+  const {
+    isUpdate,
+    setIsUpdate,
+    todos,
+    setTodos,
+    isAuthorized,
+    setIsAuthorized,
+    isLoading,
+    setIsLoading,
+  } = fromProps;
+
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -32,7 +43,7 @@ export default function TodoForm({ isUpdate, setIsUpdate }) {
       const { status, message } = response.data;
       if (status === "success") {
         handleResponse(status, message, "success");
-        setIsUpdate(false)
+        setIsUpdate(false);
         setFormData({ title: "", description: "" }); // Clear form data
       }
     } else {
@@ -93,7 +104,7 @@ export default function TodoForm({ isUpdate, setIsUpdate }) {
               <button className={`${buttonClass}`}>Add</button>
             </div>
           </form>
-          <TodoList/>
+          <TodoList fromProps={fromProps} />
         </div>
       </div>
     </Fragment>

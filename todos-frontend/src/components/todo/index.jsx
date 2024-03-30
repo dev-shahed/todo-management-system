@@ -1,8 +1,34 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { getTodos } from "../../services/TodoService";
 import TodoForm from "./TodoForm";
 
 export default function Todo() {
+  const [todos, setTodos] = useState([]);
   const [isUpdate, setIsUpdate] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAuthorized, setIsAuthorized] = useState(true);
+ 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (token) {
+          setIsAuthorized(true);
+          const response = await getTodos(token);
+          const { data, status } = response.data;
+          if (status === "success") {
+            setTodos(data);
+          }
+        }
+      } catch (error) {
+        setIsAuthorized(false);
+        console.error("Error fetching todos:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
   return (
     <div>
       <div className="flex min-h-full flex-1 flex-col justify-center px-4 py-12 lg:px-8">
@@ -11,7 +37,18 @@ export default function Todo() {
             {isUpdate ? "Update your todo" : "Create a todo"}
           </h2>
         </div>
-        <TodoForm isUpdate={isUpdate} setIsUpdate={setIsUpdate} />
+        <TodoForm
+          fromProps={{
+            isUpdate,
+            setIsUpdate,
+            todos,
+            setTodos,
+            isAuthorized,
+            setIsAuthorized,
+            isLoading,
+            setIsLoading,
+          }}
+        />
       </div>
     </div>
   );

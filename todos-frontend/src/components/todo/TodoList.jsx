@@ -1,7 +1,8 @@
-import React, { memo, useEffect, useState } from "react";
+/* eslint-disable react/prop-types */
+import React, { memo } from "react";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
-import { changeStatus, deleteTodo, getTodos } from "../../services/TodoService";
+import { changeStatus, deleteTodo } from "../../services/TodoService";
 import {
   buttonClass,
   dangerBtnClass,
@@ -9,33 +10,16 @@ import {
   successBtnClass,
 } from "../../styles/FromStyle";
 
-function TodoList() {
-  const [todos, setTodos] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isAuthorized, setIsAuthorized] = useState(true);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (token) {
-          setIsAuthorized(true);
-          const response = await getTodos(token);
-          const { data, status } = response.data;
-          if (status === "success") {
-            setTodos(data);
-          }
-        }
-      } catch (error) {
-        setIsAuthorized(false);
-        console.error("Error fetching todos:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
-
+function TodoList({ fromProps }) {
+  const {
+    isUpdate,
+    setIsUpdate,
+    todos,
+    setTodos,
+    isAuthorized,
+    isLoading
+  } = fromProps;
+  
   const handleAction = async (id, actionType, todoStatus) => {
     let actionText = "";
     let actionFunction = null;
