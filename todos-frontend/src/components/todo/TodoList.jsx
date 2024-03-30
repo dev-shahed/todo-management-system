@@ -87,10 +87,14 @@ function TodoList() {
           icon: "success",
         });
       } catch (error) {
-        console.error(`Error ${error.message}ing todo:`, error);
+        console.error(error.response.status);
+        const errorMsg =
+          error.response.status === 401 && actionType === "remove"
+            ? "Can't delete, you don't have the permission!"
+            : `Failed to ${actionType} todo, please try again`
         Swal.fire({
           title: "Error",
-          text: `Failed to ${error.message} todo. Please try again.`,
+          text: errorMsg,
           icon: "error",
         });
       }

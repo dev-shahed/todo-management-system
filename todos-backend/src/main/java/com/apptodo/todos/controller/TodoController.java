@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,13 +25,12 @@ import com.apptodo.todos.service.TodoService;
 
 import lombok.AllArgsConstructor;
 
-
 @AllArgsConstructor
 @RestController
 @CrossOrigin("*")
 @RequestMapping("api/todos")
 public class TodoController {
-   
+
     private TodoService todoService;
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -63,11 +64,19 @@ public class TodoController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteStudent(@PathVariable Long id) {
+    public ResponseEntity<?> deleteTodo(@PathVariable Long id, @AuthenticationPrincipal UserDetails userDetails) {
         try {
-            todoService.deleteTodo(id);
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(ApiResponse.success("Todo deleted successfully", null));
+            if (userDetails != null
+                    && userDetails.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
+                // User is an admin, proceed with deleting the todo
+                todoService.deleteTodo(id);
+                return ResponseEntity.status(HttpStatus.OK)
+                        .body(ApiResponse.success("Todo deleted successfully", null));
+            } else {
+                // User is not an admin, return unauthorized error response
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(ApiResponse.error("You don't have permission to perform this action"));
+            }
         } catch (ResourceNotFoundException ex) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getErrorResponse());
         } catch (Exception e) {
