@@ -15,10 +15,21 @@ export const createTodo = (todo, headers) => {
   return axios.post(REST_API_BASE_URL, todo, { headers });
 };
 
-export const updateTodo = (token, updatedTodo, id) => {
-  // Set up headers with the token
-  const headers = {
-    Authorization: `Bearer ${token}`,
-  };
+export const updateTodo = (headers, updatedTodo, id) => {
   return axios.put(`${REST_API_BASE_URL}/${id}`, { headers }, updatedTodo);
 };
+
+
+
+export const deleteTodo = (id, headers) => {
+  return axios.delete(`${REST_API_BASE_URL}/${id}`, { headers });
+};
+
+export const changeStatus = (id, headers, status) => {
+  console.log(status)
+  return axios.patch(`${REST_API_BASE_URL}/${id}/${status}`, null, { headers });
+};
+
+// export const inCompleteTodo = (id, headers) => {
+//   return axios.delete(`${REST_API_BASE_URL}/${id}/incomplete`, { headers });
+// };

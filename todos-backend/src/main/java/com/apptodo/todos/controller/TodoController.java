@@ -23,11 +23,13 @@ import com.apptodo.todos.service.TodoService;
 
 import lombok.AllArgsConstructor;
 
+
 @AllArgsConstructor
 @RestController
 @CrossOrigin("*")
 @RequestMapping("api/todos")
 public class TodoController {
+   
     private TodoService todoService;
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -103,7 +105,7 @@ public class TodoController {
         }
     }
 
-    //complete todo status = true
+    // complete todo status = true
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @PatchMapping("/{id}/complete")
     public ResponseEntity<?> completeStatus(@PathVariable Long id) {
@@ -112,20 +114,20 @@ public class TodoController {
             return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Completed!", updatedTodo));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body(ApiResponse.error("Failed to update status!"));
+                    .body(ApiResponse.error("Failed to update status!"));
         }
     }
 
-    //incomplete a todo, status = false
+    // incomplete a todo, status = false
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @PatchMapping("/{id}/incomplete")
     public ResponseEntity<?> incompleteStatus(@PathVariable Long id) {
         try {
             TodoDTO updatedTodo = todoService.inCompleteTodo(id);
-            return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Incomplete!", updatedTodo));
+            return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Mark as incomplete!", updatedTodo));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body(ApiResponse.error("Failed to update status!"));
+                    .body(ApiResponse.error("Failed to update status!"));
         }
     }
 

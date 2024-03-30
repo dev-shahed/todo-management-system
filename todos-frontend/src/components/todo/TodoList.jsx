@@ -1,6 +1,7 @@
 import React, { memo, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { getTodos } from "../../services/TodoService";
+import Swal from "sweetalert2";
+import { changeStatus, deleteTodo, getTodos } from "../../services/TodoService";
 import {
   buttonClass,
   dangerBtnClass,
@@ -9,20 +10,16 @@ import {
 } from "../../styles/FromStyle";
 
 function TodoList() {
-  const [todos, setTodos] = useState();
-  const [isLoading, setIsLoading] = useState();
-  const [isAuthorized, setIsAuthorized] = useState();
+  const [todos, setTodos] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAuthorized, setIsAuthorized] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
-      setIsLoading(true);
       try {
-        // Retrieve the token from local storage
         const token = localStorage.getItem("token");
-        // Make sure token exists before making the API call
         if (token) {
           setIsAuthorized(true);
-          // Include the token in the headers
           const response = await getTodos(token);
           const { data, status } = response.data;
           if (status === "success") {
@@ -31,11 +28,74 @@ function TodoList() {
         }
       } catch (error) {
         setIsAuthorized(false);
+        console.error("Error fetching todos:", error);
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
     };
     fetchData();
-  }, [isAuthorized]);
+  }, []);
+
+  const handleAction = async (id, actionType, todoStatus) => {
+    let actionText = "";
+    let actionFunction = null;
+
+    if (actionType === "remove") {
+      actionText = "delete";
+      actionFunction = deleteTodo;
+    } else if (actionType === "statusChange") {
+      actionText =
+        todoStatus === "complete" ? "mark as complete" : "mark as incomplete";
+      actionFunction = changeStatus;
+    }
+
+    const confirmation = await Swal.fire({
+      title: `Are you sure you want to ${actionText}?`,
+      text: "You can revert this anytime!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: `Yes, ${actionText} it!`,
+    });
+
+    if (confirmation.isConfirmed) {
+      try {
+        const token = localStorage.getItem("token");
+        const headers = {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        };
+        const response = await actionFunction(id, headers, todoStatus);
+        const { message, status } = response.data;
+        setTodos((prevTodos) => {
+          if (actionType === "remove") {
+            return prevTodos.filter((todo) => todo.id !== id);
+          } else if (actionType === "statusChange") {
+            return prevTodos.map((todo) => {
+              if (todo.id === id) {
+                return { ...todo, completed: !todo.completed };
+              }
+              return todo;
+            });
+          }
+          return prevTodos;
+        });
+        Swal.fire({
+          title: "Success!",
+          text: message,
+          icon: "success",
+        });
+      } catch (error) {
+        console.error(`Error ${error.message}ing todo:`, error);
+        Swal.fire({
+          title: "Error",
+          text: `Failed to ${error.message} todo. Please try again.`,
+          icon: "error",
+        });
+      }
+    }
+  };
 
   return (
     <div className="py-4">
@@ -44,7 +104,7 @@ function TodoList() {
           <h3 className="text-center">Loading...</h3>
         ) : (
           <div>
-            {todos?.map((todo) => (
+            {todos.map((todo) => (
               <div
                 key={todo.id}
                 className="flex my-6 items-center rounded shadow p-4 bg-pink-200"
@@ -63,12 +123,19 @@ function TodoList() {
                 </div>
                 <div className="flex flex-col gap-2">
                   <button
+                    onClick={() =>
+                      handleAction(
+                        todo.id,
+                        "statusChange",
+                        todo.completed ? "incomplete" : "complete"
+                      )
+                    }
                     className={todo.completed ? successBtnClass : buttonClass}
                   >
-                    {todo.completed ? "Completed" : "Complete"}
+                    {todo.completed ? "Completed" : "Incomplete"}
                   </button>
                   <button
-                    //onClick={() => handleRemove(todo.id)}
+                    onClick={() => handleAction(todo.id, "remove")}
                     className={dangerBtnClass}
                   >
                     Remove
@@ -89,4 +156,5 @@ function TodoList() {
     </div>
   );
 }
+
 export default memo(TodoList);
