@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { memo } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import { changeStatus, deleteTodo } from "../../services/TodoService";
@@ -11,15 +11,15 @@ import {
 } from "../../styles/FromStyle";
 
 function TodoList({ fromProps }) {
-  const {
-    isUpdate,
-    setIsUpdate,
-    todos,
-    setTodos,
-    isAuthorized,
-    isLoading
-  } = fromProps;
-  
+  const { isUpdate, setIsUpdate, todos, setTodos, isAuthorized, isLoading } =
+    fromProps;
+
+  if (!isAuthorized && todos && todos.length <= 0) {
+    return (
+      <h3 className="text-center my-5">No todos to show. Please create one.</h3>
+    );
+  }
+
   const handleAction = async (id, actionType, todoStatus) => {
     let actionText = "";
     let actionFunction = null;
@@ -84,12 +84,6 @@ function TodoList({ fromProps }) {
       }
     }
   };
-
-  if (todos && todos.length <= 0) {
-    return (
-      <h3 className="text-center my-5">No todos to show. Please create one.</h3>
-    );
-  }
 
   return (
     <div className="py-4">
@@ -157,4 +151,4 @@ function TodoList({ fromProps }) {
   );
 }
 
-export default memo(TodoList);
+export default TodoList;

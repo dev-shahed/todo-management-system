@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { getTodos } from "../../services/TodoService";
 import TodoForm from "./TodoForm";
 
@@ -6,12 +7,19 @@ export default function Todo() {
   const [todos, setTodos] = useState([]);
   const [isUpdate, setIsUpdate] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [isAuthorized, setIsAuthorized] = useState(true);
- 
+  const [isAuthorized, setIsAuthorized] = useState(false);
+  const navigator = useNavigate();
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const token = localStorage.getItem("token");
+        if (!token) {
+          setIsAuthorized(false);
+          // Redirect to authentication page
+          navigator("/auth");
+          return;
+        }
         if (token) {
           setIsAuthorized(true);
           const response = await getTodos(token);
