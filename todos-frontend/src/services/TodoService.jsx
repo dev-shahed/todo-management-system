@@ -16,7 +16,7 @@ export const createTodo = (todo, headers) => {
 };
 
 export const updateTodo = (headers, updatedTodo, id) => {
-  return axios.put(`${REST_API_BASE_URL}/${id}`, { headers }, updatedTodo);
+  return axios.put(`${REST_API_BASE_URL}/${id}`, updatedTodo, { headers });
 };
 
 
@@ -30,6 +30,6 @@ export const changeStatus = (id, headers, status) => {
   return axios.patch(`${REST_API_BASE_URL}/${id}/${status}`, null, { headers });
 };
 
-// export const inCompleteTodo = (id, headers) => {
-//   return axios.delete(`${REST_API_BASE_URL}/${id}/incomplete`, { headers });
-// };
+export const getTodoById = (id, headers) => {
+  return axios.get(`${REST_API_BASE_URL}/${id}`, { headers });
+};

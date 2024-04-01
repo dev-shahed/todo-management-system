@@ -2,7 +2,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
-import { changeStatus, deleteTodo } from "../../services/TodoService";
+import {
+  changeStatus,
+  deleteTodo
+} from "../../services/TodoService";
 import {
   buttonClass,
   dangerBtnClass,
@@ -10,15 +13,21 @@ import {
   successBtnClass,
 } from "../../styles/FromStyle";
 
-function TodoList({ fromProps }) {
-  const { isUpdate, setIsUpdate, todos, setTodos, isAuthorized, isLoading } =
+function TodoList({ fromProps, formData, setFormData, handleUpdate }) {
+  const { todos, setTodos, isAuthorized, isLoading } =
     fromProps;
 
-  if (!isAuthorized && todos && todos.length <= 0) {
+  if (isAuthorized && isLoading && todos && todos.length <= 0) {
     return (
       <h3 className="text-center my-5">No todos to show. Please create one.</h3>
     );
   }
+
+  const token = localStorage.getItem("token");
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json",
+  };
 
   const handleAction = async (id, actionType, todoStatus) => {
     let actionText = "";
@@ -45,11 +54,6 @@ function TodoList({ fromProps }) {
 
     if (confirmation.isConfirmed) {
       try {
-        const token = localStorage.getItem("token");
-        const headers = {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        };
         const response = await actionFunction(id, headers, todoStatus);
         const { message, status } = response.data;
         setTodos((prevTodos) => {
@@ -92,51 +96,60 @@ function TodoList({ fromProps }) {
           <h3 className="text-center">Loading...</h3>
         ) : (
           <div>
-            {todos &&
-              todos.length > 0 &&
+            {todos && todos.length > 0 ? (
               todos.map((todo) => (
-                <div
+                <button
                   key={todo.id}
-                  className="flex my-6 items-center rounded shadow p-4 bg-pink-200"
+                  onClick={() => handleUpdate(todo.id)}
+                  className="w-full focus:outline-none mr-0 text-left"
                 >
-                  <div className="flex-grow">
-                    <p
-                      className={
-                        todo.completed ? "line-through text-green" : ""
-                      }
-                    >
-                      {todo.title}
-                    </p>
-                    <p
-                      className={
-                        todo.completed ? "hidden" : "text-sm text-gray"
-                      }
-                    >
-                      {todo.description}
-                    </p>
+                  <div className="flex my-6 items-center rounded shadow p-4 bg-pink-200">
+                    <div className="flex-grow">
+                      <p
+                        className={
+                          todo.completed ? "line-through text-green" : ""
+                        }
+                      >
+                        {todo.title}
+                      </p>
+                      <p
+                        className={
+                          todo.completed ? "hidden" : "text-sm text-gray"
+                        }
+                      >
+                        {todo.description}
+                      </p>
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <button
+                        onClick={() =>
+                          handleAction(
+                            todo.id,
+                            "statusChange",
+                            todo.completed ? "incomplete" : "complete"
+                          )
+                        }
+                        className={
+                          todo.completed ? successBtnClass : buttonClass
+                        }
+                      >
+                        {todo.completed ? "Completed" : "Incomplete"}
+                      </button>
+                      <button
+                        onClick={() => handleAction(todo.id, "remove")}
+                        className={dangerBtnClass}
+                      >
+                        Remove
+                      </button>
+                    </div>
                   </div>
-                  <div className="flex flex-col gap-2">
-                    <button
-                      onClick={() =>
-                        handleAction(
-                          todo.id,
-                          "statusChange",
-                          todo.completed ? "incomplete" : "complete"
-                        )
-                      }
-                      className={todo.completed ? successBtnClass : buttonClass}
-                    >
-                      {todo.completed ? "Completed" : "Incomplete"}
-                    </button>
-                    <button
-                      onClick={() => handleAction(todo.id, "remove")}
-                      className={dangerBtnClass}
-                    >
-                      Remove
-                    </button>
-                  </div>
-                </div>
-              ))}
+                </button>
+              ))
+            ) : (
+              <h3 className="text-center my-5">
+                No todos to show. Please create one.
+              </h3>
+            )}
           </div>
         )
       ) : (

@@ -55,6 +55,7 @@ export default function Todo() {
             setIsAuthorized,
             isLoading,
             setIsLoading,
+            navigator
           }}
         />
       </div>

@@ -1,11 +1,20 @@
 import React, { Fragment, useState } from "react";
-import { useParams } from "react-router-dom";
 import Swal from "sweetalert2";
-import { createTodo, updateTodo } from "../../services/TodoService";
+import {
+  createTodo,
+  getTodoById,
+  updateTodo,
+} from "../../services/TodoService";
 import { buttonClass, inputClass } from "../../styles/FromStyle";
 import TodoList from "./TodoList";
 
 export default function TodoForm({ fromProps }) {
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+  });
+
+  const [getId, setGetId] = useState();
   const {
     isUpdate,
     setIsUpdate,
@@ -16,30 +25,36 @@ export default function TodoForm({ fromProps }) {
     isLoading,
     setIsLoading,
   } = fromProps;
-
-  const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-  });
-  const { id } = useParams();
+  const token = localStorage.getItem("token");
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    "Content-Type": "application/json",
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
+  //handle edit...
+  var todoId;
+  const handleUpdate = async (id) => {
+    try {
+      const response = await getTodoById(id, headers);
+      setFormData(response.data.data);
+      setGetId(id)
+      setIsUpdate(true);
+    } catch (error) {
+      console.error(error.data);
+    }
+  };
+
   // save or update todo on database.
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem("token");
-    const headers = {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    };
-
     if (isUpdate) {
       // Handle sign-in
-      const response = await updateTodo(headers, formData, id);
+      const response = await updateTodo(headers, formData, getId);
       const { status, message } = response.data;
       if (status === "success") {
         handleResponse(status, message, "success");
@@ -104,7 +119,11 @@ export default function TodoForm({ fromProps }) {
               <button className={`${buttonClass}`}>Add</button>
             </div>
           </form>
-          <TodoList fromProps={fromProps} />
+          <TodoList
+            fromProps={fromProps}
+            formData={formData}
+            handleUpdate={handleUpdate}
+          />
         </div>
       </div>
     </Fragment>
