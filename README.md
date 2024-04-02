@@ -20,7 +20,7 @@ The Todo Management System is a web application developed using React for the fr
   - Spring Boot
   - Spring Security
   - Spring Data JPA
-  - MySQL (or any preferred database)
+  - MySQL 
 
 
 ## Setup Instructions
