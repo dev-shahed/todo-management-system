@@ -2,10 +2,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
-import {
-  changeStatus,
-  deleteTodo
-} from "../../services/TodoService";
+import { changeStatus, deleteTodo } from "../../services/TodoService";
 import {
   buttonClass,
   dangerBtnClass,
@@ -14,8 +11,7 @@ import {
 } from "../../styles/FromStyle";
 
 function TodoList({ fromProps, formData, setFormData, handleUpdate }) {
-  const { todos, setTodos, isAuthorized, isLoading } =
-    fromProps;
+  const { todos, setTodos, isAuthorized, isLoading } = fromProps;
 
   if (isAuthorized && isLoading && todos && todos.length <= 0) {
     return (
@@ -90,7 +86,7 @@ function TodoList({ fromProps, formData, setFormData, handleUpdate }) {
   };
 
   return (
-    <div className="py-4">
+    <div className="py-2">
       {isAuthorized ? (
         isLoading ? (
           <h3 className="text-center">Loading...</h3>
@@ -98,13 +94,13 @@ function TodoList({ fromProps, formData, setFormData, handleUpdate }) {
           <div>
             {todos && todos.length > 0 ? (
               todos.map((todo) => (
-                <button
+                <div
                   key={todo.id}
                   onClick={() => handleUpdate(todo.id)}
-                  className="w-full focus:outline-none mr-0 text-left"
+                  className="w-full focus:outline-none mr-0 text-left cursor-pointer"
                 >
-                  <div className="flex my-6 items-center rounded shadow p-4 bg-pink-200">
-                    <div className="flex-grow">
+                  <div className="flex justify-between flex-col sm:flex-row my-3 items-center rounded shadow p-4 bg-pink-200">
+                    <div className="sm:w-2/3 sm:pr-4">
                       <p
                         className={
                           todo.completed ? "line-through text-green" : ""
@@ -120,7 +116,7 @@ function TodoList({ fromProps, formData, setFormData, handleUpdate }) {
                         {todo.description}
                       </p>
                     </div>
-                    <div className="flex flex-col gap-2">
+                    <div className="flex sm:flex-col gap-2 py-4 sm:w-1/3 md:w-1/4">
                       <button
                         onClick={() =>
                           handleAction(
@@ -143,7 +139,7 @@ function TodoList({ fromProps, formData, setFormData, handleUpdate }) {
                       </button>
                     </div>
                   </div>
-                </button>
+                </div>
               ))
             ) : (
               <h3 className="text-center my-5">
