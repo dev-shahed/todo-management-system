@@ -13,18 +13,8 @@ export default function TodoForm({ fromProps }) {
     title: "",
     description: "",
   });
-
   const [getId, setGetId] = useState();
-  const {
-    isUpdate,
-    setIsUpdate,
-    todos,
-    setTodos,
-    isAuthorized,
-    setIsAuthorized,
-    isLoading,
-    setIsLoading,
-  } = fromProps;
+  const { isUpdate, setIsUpdate } = fromProps;
   const token = localStorage.getItem("token");
   const headers = {
     Authorization: `Bearer ${token}`,
@@ -37,12 +27,11 @@ export default function TodoForm({ fromProps }) {
   };
 
   //handle edit...
-  var todoId;
   const handleUpdate = async (id) => {
     try {
       const response = await getTodoById(id, headers);
       setFormData(response.data.data);
-      setGetId(id)
+      setGetId(id);
       setIsUpdate(true);
     } catch (error) {
       console.error(error.data);
@@ -52,22 +41,26 @@ export default function TodoForm({ fromProps }) {
   // save or update todo on database.
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (isUpdate) {
-      // Handle sign-in
-      const response = await updateTodo(headers, formData, getId);
-      const { status, message } = response.data;
-      if (status === "success") {
+    try {
+      if (isUpdate) {
+        // Handle sign-in
+        const response = await updateTodo(headers, formData, getId);
+        const { status, message } = response.data;
+        if (status === "success") {
+          handleResponse(status, message, "success");
+          setIsUpdate(false);
+          setFormData({ title: "", description: "" }); // Clear form data
+        }
+      } else {
+        // Handle registration
+        const response = await createTodo(formData, headers);
+        console.log(response);
+        const { status, message } = response.data;
         handleResponse(status, message, "success");
-        setIsUpdate(false);
         setFormData({ title: "", description: "" }); // Clear form data
       }
-    } else {
-      // Handle registration
-      const response = await createTodo(formData, headers);
-      console.log(response);
-      const { status, message } = response.data;
-      handleResponse(status, message, "success");
-      setFormData({ title: "", description: "" }); // Clear form data
+    } catch (error) {
+      handleResponse(error.response.status);
     }
   };
 
@@ -79,7 +72,7 @@ export default function TodoForm({ fromProps }) {
     const title =
       status === "success"
         ? `Todo ${ACTION} successfully`
-        : `An error occurred while trying to ${ACTION.toLowerCase()} the todo.`;
+        : `You don't have permission to ${ACTION.toLowerCase()} the todo!`;
 
     Swal.fire({
       position,
