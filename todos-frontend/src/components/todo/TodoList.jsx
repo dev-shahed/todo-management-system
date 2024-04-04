@@ -98,7 +98,7 @@ function TodoList({ fromProps, formData, setFormData, handleUpdate }) {
                   key={todo.id}
                   className="w-full focus:outline-none mr-0 text-left cursor-pointer"
                 >
-                  <div className="flex justify-between flex-col sm:flex-row my-3 items-center rounded shadow p-4 bg-pink-200">
+                  <div className="flex justify-between flex-col sm:flex-row my-3 items-center rounded shadow p-3 bg-pink-200">
                     <div
                       onClick={() => handleUpdate(todo.id)}
                       className="sm:w-2/3 sm:pr-4"
